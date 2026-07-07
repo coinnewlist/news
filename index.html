@@ -1,10 +1,1060 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>New</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CoinNewList • Cryptocurrency Live Price</title>
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/292855028?s=400&u=9017654f05843200da918d89e994037d72fa3138&v=4" type="image/png">
+    <style>
+        /* ORIGINAL STYLE - completely restored with light theme, original colors and layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 20px;
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        nav a:hover {
+            color: #1da1f2;
+            transition: color 0.3s ease;
+        }
+        nav a.active {
+            color: #1da1f2;
+            border-bottom: 2px solid #1da1f2;
+            padding-bottom: 5px;
+        }
+        .container {
+            max-width: 100%;
+            padding: 10px;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .trending {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .trending-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .trending-item:hover {
+            background: #f8fbff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+        .trending-item img {
+            width: 16px;
+            margin-right: 5px;
+        }
+        .green { color: green; }
+        .red { color: red; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+            overflow-x: auto;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-size: 16px;
+        }
+        td {
+            font-size: 15px;
+        }
+        .crypto-logo {
+            width: 20px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            .trending {
+                flex-direction: column;
+                align-items: center;
+            }
+            .trending-item {
+                width: 90%;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .refresh-status {
+            font-size: 12px;
+            color: #888;
+            margin-top: 12px;
+            text-align: right;
+        }
+        .details-panel {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            border: 1px solid #e6eef8;
+            border-radius: 18px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+            padding: 24px;
+            text-align: left;
+        }
+        .details-header {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e6eef8;
+        }
+        .details-header img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            padding: 6px;
+        }
+        .details-info h2 {
+            margin: 0 0 6px;
+            font-size: 28px;
+        }
+        .details-info p {
+            margin: 4px 0;
+            color: #4b5563;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .detail-card {
+            background: #ffffff;
+            border: 1px solid #edf2f7;
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
+        }
+        .detail-card h3 {
+            margin: 0 0 8px;
+            font-size: 13px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .detail-card .value {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 700;
+            color: #111827;
+            word-break: break-word;
+        }
+        .links-section {
+            background: #ffffff;
+            border: 1px solid #edf2f7;
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-top: 14px;
+        }
+        .links-section h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+        .links-section p {
+            line-height: 1.6;
+            color: hsl(217, 19%, 27%);
+            margin: 0;
+        }
+        .link-button {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #2563eb;
+            color: white;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .link-button:hover {
+            background: #1d4ed8;
+        }
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: #e5f1ff;
+            color: #1d4ed8;
+            border: 1px solid #cfe4ff;
+            border-radius: 999px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            background: #dbe9ff;
+        }
+        .crypto-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .crypto-row:hover {
+            background: #f8fbff;
+        }
+        .crypto-row.active {
+            background: #eef6ff;
+        }
+        .details-loading {
+            padding: 30px;
+            text-align: center;
+            color: #6b7280;
+        }
+        .crypto-name-desktop {
+            display: inline;
+        }
+        .crypto-name-mobile {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .crypto-name-desktop {
+                display: none;
+            }
+            .crypto-name-mobile {
+                display: inline;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>News</h1>
+    <h2><img src="https://avatars.githubusercontent.com/u/292855028?v=4" class="crypto-logo" style="width:58px;"> CoinNewList</h2>
+    
+    <nav>
+        <a href="#all-crypto" class="nav-link active" data-section="all-crypto">All Crypto</a>
+        <a href="#newlist" class="nav-link" data-section="newlist">NewList</a>
+        <a href="#trending" class="nav-link" data-section="trending">Trending</a>
+        <a href="#news" class="nav-link" data-section="news">News</a>
+    </nav>
+    
+    <div id="all-crypto-section" class="section active container">
+        <h3 style="margin-top: 20px;">Most Visited Cryptocurrencies</h3>
+        <div class="trending" id="trendingContainer">
+            <div class="trending-item">Loading trending...</div>
+        </div>
+        
+        <div id="cryptoTableWrapper">
+            <table id="cryptoTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Market Cap</th>
+                        <th>Price</th>
+                        <th>1h % Change</th>
+                        <th>24h % Change</th>
+                    </tr>
+                </thead>
+                <tbody id="cryptoTableBody">
+                    <tr><td colspan="6" class="loading-state">Loading 201-300 cryptocurrencies...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="detailsContainer" class="details-panel" style="display:none;"></div>
+        <div id="externalRankingContainer" style="display:none; margin-top:12px;">
+            <iframe id="externalRankingFrame" src="ranking.html" style="width:100%; height:1000px; border:none; border-radius:8px;" onerror="this.outerHTML='<div class=&quot;loading-state&quot;>Ranking page is unavailable. Upload ranking.html to the same folder as this page.</div>'"></iframe>
+        </div>
+    </div>
+
+    <div id="newlist-section" class="section container" style="display: none;">
+        <h3>📌 CoinNewList NewList</h3>
+        <iframe id="newlistIframe" src="https://coinnewlist.github.io/newlist/" style="width: 100%; height: 900px; border: none; border-radius: 8px; margin-top: 20px;"></iframe>
+        <div class="refresh-status">🔄 Live NewList from CoinNewList</div>
+    </div>
+
+    <div id="trending-section" class="section container" style="display: none;">
+        <h3>📈 CoinNewList Trending</h3>
+        <iframe id="trendingIframe" src="https://coinnewlist.github.io/trending/" style="width: 100%; height: 900px; border: none; border-radius: 8px; margin-top: 20px;"></iframe>
+        <div class="refresh-status">🔄 Live Trending from CoinNewList</div>
+    </div>
+
+    <div id="news-section" class="section container" style="display: none;">
+        <h3>📰 CoinNewList News</h3>
+        <iframe id="newsIframe" src="https://coinnewlist.github.io/news/" style="width: 100%; height: 900px; border: none; border-radius: 8px; margin-top: 20px;"></iframe>
+        <div class="refresh-status">🔄 Live News from CoinNewList</div>
+    </div>
+    
+    <script>
+        // ========== RENDERING + PAGINATION FOR 90 PAGES ==========
+        // Fast, smooth updates while preserving original visual theme
+
+        // Format market cap with K/M/B/T suffixes (clean & original style)
+        function formatMarketCap(value) {
+            if (value === undefined || value === null) return '$0';
+            if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
+            if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
+            if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
+            if (value >= 1e3) return `$${(value / 1e3).toFixed(2)}K`;
+            return `$${value.toLocaleString()}`;
+        }
+        
+        // Format price with appropriate decimals (clean)
+        function formatPrice(price) {
+            if (price === undefined || price === null) return '$0.00';
+            if (price < 0.000001) return `$${price.toFixed(10)}`;
+            if (price < 0.0001) return `$${price.toFixed(8)}`;
+            if (price < 0.01) return `$${price.toFixed(6)}`;
+            if (price < 1) return `$${price.toFixed(4)}`;
+            if (price < 1000) return `$${price.toFixed(2)}`;
+            return `$${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+        
+        // Format change percentage with + sign
+        function formatChange(change) {
+            if (change === undefined || change === null) return '0.00%';
+            const sign = change >= 0 ? '+' : '';
+            return `${sign}${change.toFixed(2)}%`;
+        }
+
+        function formatCompactNumber(value) {
+            if (value === undefined || value === null || Number.isNaN(value)) return '—';
+            if (value >= 1e12) return `${(value / 1e12).toFixed(2)}T`;
+            if (value >= 1e9) return `${(value / 1e9).toFixed(2)}B`;
+            if (value >= 1e6) return `${(value / 1e6).toFixed(2)}M`;
+            if (value >= 1e3) return `${(value / 1e3).toFixed(2)}K`;
+            return value.toLocaleString();
+        }
+
+        function formatSupply(value) {
+            if (value === undefined || value === null || Number.isNaN(value)) return '—';
+            return value.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        }
+
+        function stripHtml(text) {
+            return (text || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+        
+        // DOM elements
+        const trendingContainer = document.getElementById('trendingContainer');
+        const tableBody = document.getElementById('cryptoTableBody');
+        const cryptoTableWrapper = document.getElementById('cryptoTableWrapper');
+        const externalRankingContainer = document.getElementById('externalRankingContainer');
+        const coinDetailsPanel = document.getElementById('detailsContainer');
+        
+        // Ranking constants
+        const ITEMS_PER_PAGE = 100;
+        const TOTAL_PAGES = 90;
+        
+        // Cache for current data (smooth updates)
+        let currentCryptoData = [];
+        let currentTrendingData = null;
+        let currentPage = 3;
+        let renderScheduled = false;
+        let trendingRenderScheduled = false;
+        let selectedCoinId = null;
+        let ignoreNextHashChange = false;
+        
+        // ========== RENDER TABLE - BATCH UPDATES FOR SMOOTHNESS ==========
+        function renderTable() {
+            if (!tableBody) return;
+            if (!currentCryptoData.length) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="loading-state">Loading data...</td></tr>`;
+                return;
+            }
+            
+            // Use document fragment for efficient batch DOM update
+            const fragment = document.createDocumentFragment();
+
+            for (let i = 0; i < currentCryptoData.length; i++) {
+                const crypto = currentCryptoData[i];
+                const name = crypto.name || 'Unknown';
+                const symbol = (crypto.symbol || '').toUpperCase();
+                const imageUrl = crypto.image || 'https://cryptologos.cc/logos/bitcoin-btc-logo.png';
+                const marketCap = crypto.market_cap ?? 0;
+                const price = crypto.current_price ?? 0;
+                const change1h = crypto.price_change_percentage_1h_in_currency ?? 0;
+                const change = crypto.price_change_percentage_24h ?? 0;
+                // Compute displayed rank based on current page (so page 2 becomes 101-200)
+                const displayedRank = ((currentPage - 1) * ITEMS_PER_PAGE) + (i + 1);
+                
+                const change1hClass = change1h >= 0 ? 'green' : 'red';
+                const change1hText = formatChange(change1h);
+                const changeClass = change >= 0 ? 'green' : 'red';
+                const changeText = formatChange(change);
+                
+                const row = document.createElement('tr');
+                row.className = 'crypto-row';
+                if (crypto.id === selectedCoinId) {
+                    row.classList.add('active');
+                }
+                row.addEventListener('click', () => {
+                    document.querySelectorAll('.crypto-row').forEach((item) => item.classList.remove('active'));
+                    row.classList.add('active');
+                    selectCrypto(crypto);
+                });
+                
+                // Rank cell
+                const rankCell = document.createElement('td');
+                rankCell.textContent = displayedRank;
+                rankCell.style.fontWeight = '600';
+                rankCell.style.color = '#000';
+                
+                // Name cell with logo
+                const nameCell = document.createElement('td');
+                nameCell.innerHTML = `<img src="${imageUrl}" class="crypto-logo" alt="${name}" onerror="this.src='https://cryptologos.cc/logos/bitcoin-btc-logo.png'"> <span class="crypto-name-desktop">${name} (${symbol})</span><span class="crypto-name-mobile">${symbol}</span>`;
+                // Market Cap cell
+                const marketCell = document.createElement('td');
+                marketCell.textContent = formatMarketCap(marketCap);
+                
+                // Price cell
+                const priceCell = document.createElement('td');
+                priceCell.textContent = formatPrice(price);
+                
+                // 1h Change cell
+                const change1hCell = document.createElement('td');
+                change1hCell.innerHTML = `<span class="${change1hClass}">${change1hText}</span>`;
+                
+                // Change cell
+                const changeCell = document.createElement('td');
+                changeCell.innerHTML = `<span class="${changeClass}">${changeText}</span>`;
+                
+                row.appendChild(rankCell);
+                row.appendChild(nameCell);
+                row.appendChild(marketCell);
+                row.appendChild(priceCell);
+                row.appendChild(change1hCell);
+                row.appendChild(changeCell);
+                
+                fragment.appendChild(row);
+            }
+            
+            // Smooth swap
+            tableBody.innerHTML = '';
+            tableBody.appendChild(fragment);
+        }
+
+        function showDetailsLoading() {
+            if (!coinDetailsPanel) return;
+            coinDetailsPanel.style.display = 'block';
+            coinDetailsPanel.innerHTML = '<div class="details-loading">Loading crypto details...</div>';
+        }
+
+        function hideMainContent() {
+            const header = document.querySelector('h2');
+            const nav = document.querySelector('nav');
+            const trendingSection = document.getElementById('trendingContainer');
+            const tableWrapper = document.getElementById('cryptoTableWrapper');
+            const heading = document.querySelector('#all-crypto-section h3');
+            const section = document.getElementById('all-crypto-section');
+
+            if (header) header.style.display = 'none';
+            if (nav) nav.style.display = 'none';
+            if (trendingSection) trendingSection.style.display = 'none';
+            if (tableWrapper) tableWrapper.style.display = 'none';
+            if (heading) heading.style.display = 'none';
+            if (section) section.style.padding = '0';
+        }
+
+        function showMainContent() {
+            const header = document.querySelector('h2');
+            const nav = document.querySelector('nav');
+            const trendingSection = document.getElementById('trendingContainer');
+            const tableWrapper = document.getElementById('cryptoTableWrapper');
+            const heading = document.querySelector('#all-crypto-section h3');
+            const section = document.getElementById('all-crypto-section');
+
+            if (header) header.style.display = '';
+            if (nav) nav.style.display = '';
+            if (trendingSection) trendingSection.style.display = '';
+            if (tableWrapper) tableWrapper.style.display = '';
+            if (heading) heading.style.display = '';
+            if (section) section.style.padding = '';
+        }
+
+        function updateUrlForCoin(crypto) {
+            const slug = (crypto?.id || '').toLowerCase();
+            if (!slug) return;
+            // Use hash-based coin links so direct URLs work on GitHub Pages
+            ignoreNextHashChange = true;
+            location.hash = slug;
+        }
+
+        function clearCoinUrl() {
+            const h = (location.hash || '').replace(/^#/, '');
+            if (h && !h.includes('/')) {
+                location.hash = '';
+            }
+        }
+
+        async function selectCrypto(crypto) {
+            selectedCoinId = crypto?.id || null;
+            updateUrlForCoin(crypto);
+            hideMainContent();
+            showDetailsLoading();
+
+            try {
+                const coinId = crypto?.id;
+                if (!coinId) throw new Error('No coin id available');
+                const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=false`);
+                if (!response.ok) throw new Error(`Details error: ${response.status}`);
+                const data = await response.json();
+                renderCoinDetails(data, crypto);
+            } catch (error) {
+                console.error('Coin details fetch error:', error);
+                if (coinDetailsPanel) {
+                    coinDetailsPanel.innerHTML = `
+                        <button class="back-button" type="button" onclick="handleBackToList()">← Back to list</button>
+                <div class="details-loading">Unable to load full details right now. Showing the latest available data instead.</div>
+                        <div class="details-grid">
+                            <div class="detail-card"><h3>Current Price</h3><p class="value">${formatPrice(crypto?.current_price ?? 0)}</p></div>
+                            <div class="detail-card"><h3>Market Cap</h3><p class="value">${formatMarketCap(crypto?.market_cap ?? 0)}</p></div>
+                            <div class="detail-card"><h3>24h Change</h3><p class="value ${((crypto?.price_change_percentage_24h ?? 0) >= 0 ? 'green' : 'red')}">${formatChange(crypto?.price_change_percentage_24h ?? 0)}</p></div>
+                        </div>`;
+                }
+            }
+        }
+
+        // Select a coin by id (used for direct links like #coin/bitcoin)
+        async function selectCryptoById(coinId) {
+            if (!coinId) return;
+            selectedCoinId = coinId;
+            hideMainContent();
+            showDetailsLoading();
+            try {
+                const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=false`);
+                if (!response.ok) throw new Error(`Details error: ${response.status}`);
+                const data = await response.json();
+                renderCoinDetails(data, {});
+            } catch (error) {
+                console.error('selectCryptoById error:', error);
+                if (coinDetailsPanel) coinDetailsPanel.innerHTML = '<div class="details-loading">Unable to load coin details.</div>';
+            }
+        }
+
+        function renderCoinDetails(data, fallbackCrypto) {
+            if (!coinDetailsPanel) return;
+
+            const marketData = data?.market_data || {};
+            const image = data?.image?.large || data?.image?.small || fallbackCrypto?.image || 'https://cryptologos.cc/logos/bitcoin-btc-logo.png';
+            const name = data?.name || fallbackCrypto?.name || 'Unknown';
+            const symbol = (data?.symbol || fallbackCrypto?.symbol || '').toUpperCase();
+            const rank = data?.market_cap_rank || fallbackCrypto?.market_cap_rank || '—';
+            const currentPrice = marketData.current_price?.usd ?? fallbackCrypto?.current_price ?? 0;
+            const marketCap = marketData.market_cap?.usd ?? fallbackCrypto?.market_cap ?? 0;
+            const volume24h = marketData.total_volume?.usd ?? 0;
+            const change1h = marketData.price_change_percentage_1h_in_currency?.usd ?? fallbackCrypto?.price_change_percentage_1h_in_currency ?? 0;
+            const change24h = marketData.price_change_percentage_24h_in_currency?.usd ?? fallbackCrypto?.price_change_percentage_24h ?? 0;
+            const high24h = marketData.high_24h?.usd ?? 0;
+            const low24h = marketData.low_24h?.usd ?? 0;
+            const circulatingSupply = marketData.circulating_supply ?? 0;
+            const maxSupply = marketData.max_supply ?? 0;
+            const aboutText = stripHtml(data?.description?.en || 'No description available for this asset yet.');
+            const homepage = (data?.links?.homepage || []).find(Boolean);
+            const blockchainSites = Array.isArray(data?.links?.blockchain_site)
+                ? data.links.blockchain_site.filter((site) => typeof site === 'string' && site.trim())
+                : [];
+            const explorerLinks = blockchainSites.map((site) => {
+                const normalized = (site || '').toLowerCase();
+                let label = 'Explorer';
+                if (normalized.includes('etherscan')) label = 'Etherscan';
+                else if (normalized.includes('bscscan')) label = 'BscScan';
+                else if (normalized.includes('polygonscan')) label = 'PolygonScan';
+                else if (normalized.includes('arbiscan')) label = 'Arbiscan';
+                else if (normalized.includes('snowtrace')) label = 'Snowtrace';
+                else if (normalized.includes('ftmscan')) label = 'FTMScan';
+                else if (normalized.includes('solscan')) label = 'Solscan';
+                return { url: site, label: `View on ${label}` };
+            });
+            const tickerContracts = (data?.tickers || [])
+                .map((ticker) => ({
+                    address: ticker?.contract_address,
+                    blockchain: ticker?.market?.identifier || ticker?.market?.name || 'Contract'
+                }))
+                .filter((item) => typeof item.address === 'string' && item.address.trim());
+            const contractSources = [
+                data?.contract_address,
+                data?.platforms?.ethereum,
+                data?.platforms?.binance_smart_chain,
+                data?.platforms?.bsc,
+                data?.platforms?.polygon,
+                data?.platforms?.arbitrum,
+                data?.platforms?.optimism,
+                data?.platforms?.avalanche,
+                data?.platforms?.fantom,
+                data?.platforms?.solana
+            ].filter(Boolean);
+            const contracts = [...tickerContracts, ...contractSources.reduce((acc, source) => {
+                if (typeof source === 'string' && source.trim()) {
+                    acc.push({ address: source, blockchain: 'Contract' });
+                }
+                return acc;
+            }, [])];
+            const contractsMarkup = (explorerLinks.length || contracts.length)
+                ? [
+                    ...explorerLinks.map((link) => `<div style="margin:8px 0 12px;"><a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-button" style="margin-top:6px;">${link.label}</a></div>`),
+                    ...contracts.map((contract) => {
+                        const address = contract.address || 'Unknown address';
+                        const rawBlockchain = (contract.blockchain || contract.platform || '').toLowerCase();
+                        let blockscanUrl = '';
+
+                        if (address !== 'Unknown address') {
+                            if (rawBlockchain.includes('ethereum') || rawBlockchain.includes('eth') || address.startsWith('0x')) {
+                                blockscanUrl = `https://etherscan.io/address/${address}`;
+                            } else if (rawBlockchain.includes('binance') || rawBlockchain.includes('bnb') || rawBlockchain.includes('bsc')) {
+                                blockscanUrl = `https://bscscan.com/address/${address}`;
+                            } else if (rawBlockchain.includes('polygon')) {
+                                blockscanUrl = `https://polygonscan.com/address/${address}`;
+                            } else if (rawBlockchain.includes('arbitrum')) {
+                                blockscanUrl = `https://arbiscan.io/address/${address}`;
+                            } else if (rawBlockchain.includes('optimism')) {
+                                blockscanUrl = `https://optimistic.etherscan.io/address/${address}`;
+                            } else if (rawBlockchain.includes('avalanche')) {
+                                blockscanUrl = `https://snowtrace.io/address/${address}`;
+                            } else if (rawBlockchain.includes('fantom')) {
+                                blockscanUrl = `https://ftmscan.com/address/${address}`;
+                            } else if (rawBlockchain.includes('solana')) {
+                                blockscanUrl = `https://solscan.io/account/${address}`;
+                            }
+                        }
+
+                        const explorerLink = blockscanUrl
+                            ? `<a href="${blockscanUrl}" target="_blank" rel="noopener noreferrer" class="link-button" style="margin-top:6px;">View on Blockscan</a>`
+                            : '';
+
+                        return `<div style="margin:8px 0 12px;"><p style="margin:0 0 6px; word-break:break-all;"><strong>${rawBlockchain || 'Contract'}</strong>: ${address}</p>${explorerLink}</div>`;
+                    })
+                ].join('')
+                : '<p style="color:#999; margin:0;">No explorer links available for this cryptocurrency yet.</p>';
+            const officialLink = homepage
+                ? `<div class="links-list" style="margin-top:12px;"><a href="${homepage}" target="_blank" class="link-button">Official Website</a></div>`
+                : '';
+
+            coinDetailsPanel.style.display = 'block';
+            coinDetailsPanel.innerHTML = `
+                <button class="back-button" type="button" onclick="handleBackToList()">← Back to list</button>
+                <div class="details-header">
+                    <img src="${image}" alt="${name}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.src='https://cryptologos.cc/logos/bitcoin-btc-logo.png'">
+                    <div class="details-info">
+                        <h2>${name}</h2>
+                        <p><strong>Rank:</strong> #${rank}</p>
+                        <p><strong>Symbol:</strong> ${symbol}</p>
+                    </div>
+                </div>
+                <div class="details-grid">
+                    <div class="detail-card">
+                        <h3>Current Price</h3>
+                        <p class="value">${formatPrice(currentPrice)}</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Market Cap</h3>
+                        <p class="value">${formatMarketCap(marketCap)}</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>24h Volume</h3>
+                        <p class="value">${formatMarketCap(volume24h)}</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>1h Change</h3>
+                        <p class="value ${change1h >= 0 ? 'green' : 'red'}">${formatChange(change1h)}</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>24h Change</h3>
+                        <p class="value ${change24h >= 0 ? 'green' : 'red'}">${formatChange(change24h)}</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>24h High</h3>
+                        <p class="value">${formatPrice(high24h)}</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>24h Low</h3>
+                        <p class="value">${formatPrice(low24h)}</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Circulating Supply</h3>
+                        <p class="value">${formatSupply(circulatingSupply)}</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Max Supply</h3>
+                        <p class="value">${maxSupply ? formatSupply(maxSupply) : 'Unlimited'}</p>
+                    </div>
+                </div>
+                <div class="links-section">
+                    <h3>📝 About</h3>
+                    <p>${aboutText}</p>
+                    ${officialLink}
+                </div>
+                <div class="links-section">
+                    <h3>� Blockscan / Explorer</h3>
+                    ${contractsMarkup}
+                </div>
+`;
+        }
+
+        function handleBackToList() {
+            clearCoinUrl();
+            showMainContent();
+            if (coinDetailsPanel) {
+                coinDetailsPanel.style.display = 'none';
+                coinDetailsPanel.innerHTML = '';
+            }
+            selectedCoinId = null;
+            renderTable();
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && coinDetailsPanel && coinDetailsPanel.style.display === 'block') {
+                handleBackToList();
+            }
+        });
+
+        function scheduleTableRender() {
+            if (renderScheduled) return;
+            renderScheduled = true;
+            requestAnimationFrame(() => {
+                renderTable();
+                renderScheduled = false;
+            });
+        }
+
+        function getRankingUrlForPage(page) {
+            return 'ranking.html';
+        }
+
+        function toggleRankingView(showExternal, page = currentPage) {
+            const rankingUrl = getRankingUrlForPage(page);
+            const shouldShowExternal = showExternal && !!rankingUrl;
+            const externalRankingFrame = document.getElementById('externalRankingFrame');
+
+            if (cryptoTableWrapper) {
+                cryptoTableWrapper.style.display = 'block';
+            }
+            if (coinDetailsPanel) {
+                coinDetailsPanel.style.display = 'block';
+            }
+            if (externalRankingContainer) {
+                externalRankingContainer.style.display = shouldShowExternal ? 'block' : 'none';
+            }
+            if (shouldShowExternal && externalRankingFrame && externalRankingFrame.src !== rankingUrl) {
+                externalRankingFrame.src = rankingUrl;
+            }
+        }
+
+        // ========== RENDER TRENDING (ORIGINAL STYLE) ==========
+        function renderTrending() {
+            if (!trendingContainer) return;
+            if (!currentTrendingData || !currentTrendingData.coins || currentTrendingData.coins.length === 0) {
+                trendingContainer.innerHTML = '<div class="trending-item">No trending data available</div>';
+                return;
+            }
+            
+            const fragment = document.createDocumentFragment();
+            const trendingCoins = currentTrendingData.coins.slice(0, 12);
+            
+            for (let coin of trendingCoins) {
+                const item = coin.item;
+                const priceChange = item.data?.price_change_percentage_24h?.usd ?? 0;
+                const currentPrice = item.data?.price;
+                const priceFormatted = currentPrice ? (currentPrice < 0.01 ? currentPrice.toFixed(6) : currentPrice.toFixed(4)) : '?';
+                const changeClass = priceChange >= 0 ? 'green' : 'red';
+                const changeSymbol = priceChange >= 0 ? '▲' : '▼';
+                const thumbSrc = item.thumb || (item.large ? item.large : 'https://cryptologos.cc/logos/bitcoin-btc-logo.png');
+                const coinId = item.id || item.slug || item.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                const fallbackCrypto = {
+                    id: coinId,
+                    name: item.name,
+                    symbol: item.symbol,
+                    image: thumbSrc,
+                    current_price: currentPrice,
+                    market_cap: item.data?.market_cap,
+                    price_change_percentage_24h: priceChange,
+                    price_change_percentage_1h_in_currency: item.data?.price_change_percentage_1h?.usd ?? 0
+                };
+                
+                const trendItem = document.createElement('div');
+                trendItem.className = 'trending-item';
+                trendItem.setAttribute('role', 'button');
+                trendItem.setAttribute('tabindex', '0');
+                trendItem.innerHTML = `
+                    <img src="${thumbSrc}" alt="${item.name}">
+                    ${item.name} (${item.symbol?.toUpperCase() || ''}) - $${priceFormatted} /
+                    <span class="${changeClass}">${changeSymbol} ${Math.abs(priceChange).toFixed(2)}%</span>
+                `;
+
+                const openCoinDetails = () => {
+                    if (coinId) {
+                        selectCrypto(fallbackCrypto);
+                    }
+                };
+
+                trendItem.addEventListener('click', openCoinDetails);
+                trendItem.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        openCoinDetails();
+                    }
+                });
+
+                fragment.appendChild(trendItem);
+            }
+            
+            trendingContainer.innerHTML = '';
+            trendingContainer.appendChild(fragment);
+        }
+        
+        function scheduleTrendingRender() {
+            if (trendingRenderScheduled) return;
+            trendingRenderScheduled = true;
+            requestAnimationFrame(() => {
+                renderTrending();
+                trendingRenderScheduled = false;
+            });
+        }
+        
+        // ========== API FETCHING WITH RACE CONDITION HANDLING ==========
+        let currentMarketFetchId = 0;
+        let currentTrendingFetchId = 0;
+        
+        function setPage(page) {
+            if (page < 1 || page > TOTAL_PAGES) return;
+            if (page === currentPage) return;
+            currentPage = page;
+            toggleRankingView(false, page);
+            scheduleTableRender();
+            fetchCryptoPage(page);
+        }
+
+        async function fetchCryptoPage(page = currentPage) {
+            const fetchId = ++currentMarketFetchId;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                
+                const response = await fetch(
+                    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${ITEMS_PER_PAGE}&page=${page}&sparkline=false&price_change_percentage=1h,24h`,
+                    { signal: controller.signal }
+                );
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
+                const data = await response.json();
+                
+                // Ignore stale responses
+                if (fetchId !== currentMarketFetchId) return;
+                
+                if (data && Array.isArray(data) && data.length > 0) {
+                    currentCryptoData = data;
+                    scheduleTableRender();
+                } else if (currentCryptoData.length === 0) {
+                    // Show error only if we have no data at all
+                    tableBody.innerHTML = '<tr><td colspan="6" class="loading-state">⚠️ Failed to load data. Retrying...</td></tr>';
+                }
+            } catch (error) {
+                if (error.name !== 'AbortError' && fetchId === currentMarketFetchId) {
+                    console.error('Market fetch error:', error);
+                    if (currentCryptoData.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="6" class="loading-state">⚠️ Network error. Reconnecting...</td></tr>';
+                    }
+                }
+            }
+        }
+        
+        // Fetch trending cryptocurrencies
+        async function fetchTrendingCrypto() {
+            const fetchId = ++currentTrendingFetchId;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                const response = await fetch('https://api.coingecko.com/api/v3/search/trending', { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) throw new Error(`Trending API error: ${response.status}`);
+                const data = await response.json();
+                
+                if (fetchId !== currentTrendingFetchId) return;
+                
+                if (data && data.coins) {
+                    currentTrendingData = data;
+                    scheduleTrendingRender();
+                }
+            } catch (error) {
+                if (error.name !== 'AbortError' && fetchId === currentTrendingFetchId) {
+                    console.error('Trending fetch error:', error);
+                }
+            }
+        }
+        
+        // ========== LIVE REFRESH EVERY 1 SECOND (ORIGINAL BEHAVIOR) ==========
+        let marketInterval = null;
+        let trendingInterval = null;
+        
+        function startLiveUpdates() {
+            // Clear existing intervals
+            if (marketInterval) clearInterval(marketInterval);
+            if (trendingInterval) clearInterval(trendingInterval);
+            
+            // Initial fetch immediately
+            fetchCryptoPage(currentPage);
+            fetchTrendingCrypto();
+            
+            // Set intervals for 1-second updates (as original requirement)
+            marketInterval = setInterval(() => {
+                fetchCryptoPage(currentPage);
+            }, 1000);
+            
+            trendingInterval = setInterval(() => {
+                fetchTrendingCrypto();
+            }, 1000);
+        }
+        
+        // Handle page visibility to reduce background work (preserves original style)
+        function handleVisibilityChange() {
+            if (document.hidden) {
+                // Stop intervals when tab is hidden to save resources
+                if (marketInterval) clearInterval(marketInterval);
+                if (trendingInterval) clearInterval(trendingInterval);
+            } else {
+                // Resume intervals when tab becomes visible
+                if (marketInterval) clearInterval(marketInterval);
+                if (trendingInterval) clearInterval(trendingInterval);
+                marketInterval = setInterval(() => fetchCryptoPage(currentPage), 1000);
+                trendingInterval = setInterval(() => fetchTrendingCrypto(), 1000);
+                // Also fetch fresh data immediately
+                fetchCryptoPage(currentPage);
+                fetchTrendingCrypto();
+            }
+        }
+        
+        // Add visibility change listener
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (marketInterval) clearInterval(marketInterval);
+            if (trendingInterval) clearInterval(trendingInterval);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        });
+        
+        function setActiveSection(section) {
+            document.querySelectorAll('.section').forEach(el => {
+                el.style.display = 'none';
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-link').forEach(el => {
+                el.classList.remove('active');
+            });
+            const sectionElement = document.getElementById(`${section}-section`);
+            if (sectionElement) {
+                sectionElement.style.display = 'block';
+                sectionElement.classList.add('active');
+            } else {
+                const fallbackSection = document.getElementById('all-crypto-section');
+                if (fallbackSection) {
+                    fallbackSection.style.display = 'block';
+                    fallbackSection.classList.add('active');
+                }
+            }
+            const navLink = document.querySelector(`[data-section="${section}"]`);
+            if (navLink) navLink.classList.add('active');
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = e.currentTarget.getAttribute('data-section');
+                if (section) {
+                    location.hash = section;
+                    setActiveSection(section);
+                }
+            });
+        });
+
+        // Update view when hash changes (supports direct links, coin links and back/forward)
+        window.addEventListener('hashchange', () => {
+            if (ignoreNextHashChange) { ignoreNextHashChange = false; return; }
+            const h = (location.hash || '').replace(/^#/, '');
+            if (!h) {
+                setActiveSection('all-crypto');
+                return;
+            }
+            if (h && !h.includes('/') && ['all-crypto', 'newlist', 'trending', 'news'].indexOf(h) === -1) {
+                selectCryptoById(h);
+            } else {
+                setActiveSection(h);
+            }
+        });
+
+        // Start everything when page loads
+        // Detect deep links on load (hash-based or path-based) and open coin details if present
+        window.onload = () => {
+            startLiveUpdates();
+            const h = (location.hash || '').replace(/^#/, '');
+            let shouldOpenCoinDetails = false;
+
+            if (h && !h.includes('/') && ['all-crypto', 'newlist', 'trending', 'news'].indexOf(h) === -1) {
+                shouldOpenCoinDetails = true;
+                selectCryptoById(h);
+            } else if (!h) {
+                // Handle path-based links (e.g. https://user.github.io/repo/bitcoin)
+                const pathParts = location.pathname.split('/').filter(Boolean);
+                const lastPart = pathParts[pathParts.length - 1] || '';
+                if (lastPart && !lastPart.includes('.') && lastPart.toLowerCase() !== 'index.html') {
+                    // Treat lastPart as coin id and open details; convert to hash for consistency
+                    shouldOpenCoinDetails = true;
+                    ignoreNextHashChange = true;
+                    location.hash = lastPart;
+                    selectCryptoById(lastPart);
+                } else {
+                    const initialSection = 'all-crypto';
+                    setActiveSection(initialSection);
+                }
+            } else {
+                const initialSection = h || 'all-crypto';
+                setActiveSection(initialSection);
+            }
+
+            if (!shouldOpenCoinDetails) {
+                toggleRankingView(false);
+                currentPage = 3;
+            }
+        };
+        
+        // Optional: preload image cache for better visual smoothness
+        const preloadImages = ['https://cryptologos.cc/logos/bitcoin-btc-logo.png'];
+        preloadImages.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+    </script>
 </body>
 </html>
